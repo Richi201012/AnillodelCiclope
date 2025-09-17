@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { insertOrderSchema, type InsertOrder } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
 import { MapPin, Phone, User, Clock } from "lucide-react";
@@ -17,9 +18,10 @@ import { MapPin, Phone, User, Clock } from "lucide-react";
 interface OrderFormProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export function OrderForm({ isOpen, onClose }: OrderFormProps) {
+export function OrderForm({ isOpen, onClose, onSuccess }: OrderFormProps) {
   const { cart, clearCart } = useCart();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,7 +39,7 @@ export function OrderForm({ isOpen, onClose }: OrderFormProps) {
     setIsSubmitting(true);
     
     // Create order details from cart
-    const orderDetails = cart.items.map(item => {
+    const cartItemsDetails = cart.items.map(item => {
       let itemLine = `${item.quantity}x ${item.name} - $${(item.price * item.quantity).toFixed(2)}`;
       if (item.customizations) {
         itemLine += `\n  Personalizaciones: ${item.customizations}`;
@@ -48,12 +50,24 @@ export function OrderForm({ isOpen, onClose }: OrderFormProps) {
       return itemLine;
     }).join('\n\n');
 
-    const finalOrderDetails = `${orderDetails}\n\nTOTAL: $${cart.total.toFixed(2)}`;
+    // Combine cart items, delivery address, and total
+    const finalOrderDetails = `PEDIDO:\n${cartItemsDetails}\n\nTOTAL: $${cart.total.toFixed(2)}\n\nDIRECCIÓN DE ENTREGA:\n${data.orderDetails}`;
 
     try {
-      // Here you would normally send to backend API
-      // For now, we'll simulate the order creation
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      // Create the order with proper order details
+      const orderPayload = {
+        customerName: data.customerName,
+        customerPhone: data.customerPhone,
+        orderDetails: finalOrderDetails
+      };
+
+      await apiRequest('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderPayload),
+      });
       
       toast({
         title: "¡Pedido realizado exitosamente!",
@@ -64,6 +78,9 @@ export function OrderForm({ isOpen, onClose }: OrderFormProps) {
       clearCart();
       form.reset();
       onClose();
+      
+      // Call success callback to close cart drawer
+      onSuccess?.();
       
     } catch (error) {
       toast({

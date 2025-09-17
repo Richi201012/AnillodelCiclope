@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export default function ContactSection() {
   return (
-    <section id="contacto" className="py-20 bg-card">
+    <section id="contacto" className="py-19 bg-card">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-8">

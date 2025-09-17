@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-center">
           <div className="flex items-center justify-center space-x-3 mb-4">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+            <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center">
               <Eye className="text-primary-foreground h-4 w-4" />
             </div>
             <span className="text-xl font-bold text-accent">El Anillo del Ciclope</span>
