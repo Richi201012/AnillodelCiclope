@@ -52,3 +52,36 @@ export type InsertMenuItem = z.infer<typeof insertMenuItemSchema>;
 export type MenuItem = typeof menuItems.$inferSelect;
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type Order = typeof orders.$inferSelect;
+
+// Cart and Order Item Schemas (for local cart state)
+export const cartItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().optional(),
+  price: z.number(),
+  category: z.string(),
+  imageUrl: z.string().optional(),
+  quantity: z.number().min(1).default(1),
+  customizations: z.string().optional(), // Custom notes/description
+  specialInstructions: z.string().optional(),
+});
+
+export const cartSchema = z.object({
+  items: z.array(cartItemSchema),
+  total: z.number(),
+  itemCount: z.number(),
+});
+
+export type CartItem = z.infer<typeof cartItemSchema>;
+export type Cart = z.infer<typeof cartSchema>;
+
+// Menu item type for the frontend (matches the static data structure)
+export type MenuItemData = {
+  name: string;
+  description: string;
+  price: number;
+  category?: string;
+  day?: string; // for promotions
+  image?: string;
+  flavor?: string; // for beverages
+};
