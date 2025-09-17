@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,10 +7,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ShoppingCart, Plus, Minus, Trash2, X } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
+import { OrderForm } from "@/components/order-form";
 
 export function CartDrawer() {
   const { cart, updateQuantity, removeItem, clearCart, isOpen, setIsOpen } = useCart();
   const { toast } = useToast();
+  const [isOrderFormOpen, setIsOrderFormOpen] = useState(false);
 
   const handleRemoveItem = (itemId: string, itemName: string) => {
     removeItem(itemId);
@@ -28,11 +31,15 @@ export function CartDrawer() {
   };
 
   const handlePlaceOrder = () => {
-    // This would typically open a checkout/order form
-    toast({
-      title: "Función próximamente",
-      description: "La función de realizar pedido estará disponible pronto",
-    });
+    if (cart.items.length === 0) {
+      toast({
+        title: "Carrito vacío",
+        description: "Agrega items al carrito antes de realizar el pedido",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsOrderFormOpen(true);
   };
 
   return (
@@ -183,6 +190,12 @@ export function CartDrawer() {
           )}
         </div>
       </SheetContent>
+      
+      {/* Order Form Modal */}
+      <OrderForm
+        isOpen={isOrderFormOpen}
+        onClose={() => setIsOrderFormOpen(false)}
+      />
     </Sheet>
   );
 }
