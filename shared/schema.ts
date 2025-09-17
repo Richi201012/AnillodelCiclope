@@ -64,6 +64,7 @@ export const cartItemSchema = z.object({
   quantity: z.number().min(1).default(1),
   customizations: z.string().optional(), // Custom notes/description
   specialInstructions: z.string().optional(),
+  variant: z.string().optional(), // For variants like flavor, size (e.g., "500ml", "250ml")
 });
 
 export const cartSchema = z.object({

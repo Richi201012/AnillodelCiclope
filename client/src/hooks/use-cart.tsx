@@ -3,7 +3,7 @@ import { Cart, CartItem, MenuItemData } from '@shared/schema';
 
 interface CartContextType {
   cart: Cart;
-  addItem: (item: MenuItemData, customizations?: string, specialInstructions?: string) => void;
+  addItem: (item: MenuItemData, customizations?: string, specialInstructions?: string, quantity?: number) => void;
   removeItem: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
@@ -39,36 +39,39 @@ export function CartProvider({ children }: CartProviderProps) {
     return { total, itemCount };
   }, []);
 
-  const addItem = useCallback((item: MenuItemData, customizations?: string, specialInstructions?: string) => {
+  const addItem = useCallback((item: MenuItemData, customizations?: string, specialInstructions?: string, quantity: number = 1) => {
     setCart(prevCart => {
+      const variant = item.flavor || item.day; // Use flavor or day as variant identifier
       const existingItemIndex = prevCart.items.findIndex(
         cartItem => 
           cartItem.name === item.name && 
           cartItem.customizations === customizations &&
-          cartItem.specialInstructions === specialInstructions
+          cartItem.specialInstructions === specialInstructions &&
+          cartItem.variant === variant
       );
 
       let newItems: CartItem[];
 
       if (existingItemIndex >= 0) {
-        // Item exists with same customizations, increase quantity
+        // Item exists with same customizations and variant, increase quantity
         newItems = [...prevCart.items];
         newItems[existingItemIndex] = {
           ...newItems[existingItemIndex],
-          quantity: newItems[existingItemIndex].quantity + 1
+          quantity: newItems[existingItemIndex].quantity + quantity
         };
       } else {
-        // New item or different customizations
+        // New item or different customizations/variant
         const newItem: CartItem = {
-          id: `${item.name}-${Date.now()}-${Math.random()}`,
+          id: `${item.name}-${variant || ''}-${Date.now()}-${Math.random()}`,
           name: item.name,
           description: item.description,
           price: item.price,
           category: item.category || 'general',
           imageUrl: item.image,
-          quantity: 1,
+          quantity,
           customizations,
           specialInstructions,
+          variant,
         };
         newItems = [...prevCart.items, newItem];
       }

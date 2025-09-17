@@ -3,9 +3,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, Drumstick, Box, Coffee, Utensils } from "lucide-react";
+import { MenuItemModal } from "@/components/menu-item-modal";
+import { MenuItemData } from "@shared/schema";
 
 export default function MenuSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedItem, setSelectedItem] = useState<MenuItemData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleItemClick = (item: MenuItemData) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedItem(null);
+  };
 
   const categories = [
     { id: "all", name: "Todas las categorías", icon: Utensils },
@@ -199,7 +213,18 @@ export default function MenuSection() {
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {promociones.map((promo, index) => (
-                <Card key={index} className="menu-card bg-background border-border">
+                <Card 
+                  key={index} 
+                  className="menu-card bg-background border-border cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
+                  onClick={() => handleItemClick({ 
+                    name: promo.name, 
+                    description: promo.description, 
+                    price: promo.price, 
+                    category: "Promociones",
+                    day: promo.day 
+                  })}
+                  data-testid={`card-promo-${index}`}
+                >
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-1">
@@ -233,7 +258,18 @@ export default function MenuSection() {
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {snacks.map((snack, index) => (
-                <Card key={index} className="menu-card bg-background border-border overflow-hidden">
+                <Card 
+                  key={index} 
+                  className="menu-card bg-background border-border overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
+                  onClick={() => handleItemClick({ 
+                    name: snack.name, 
+                    description: snack.description, 
+                    price: snack.price, 
+                    category: "Snacks",
+                    image: snack.image 
+                  })}
+                  data-testid={`card-snack-${index}`}
+                >
                   <img 
                     src={snack.image}
                     alt={snack.name}
@@ -270,7 +306,18 @@ export default function MenuSection() {
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {paquetes.map((paquete, index) => (
-                <Card key={index} className="menu-card bg-background border-border overflow-hidden">
+                <Card 
+                  key={index} 
+                  className="menu-card bg-background border-border overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
+                  onClick={() => handleItemClick({ 
+                    name: paquete.name, 
+                    description: paquete.description, 
+                    price: paquete.price, 
+                    category: "Paquetes",
+                    image: paquete.image 
+                  })}
+                  data-testid={`card-package-${index}`}
+                >
                   <img 
                     src={paquete.image}
                     alt={paquete.name}
@@ -316,7 +363,18 @@ export default function MenuSection() {
                     </h4>
                     <div className="space-y-2">
                       {category.items.map((item, itemIndex) => (
-                        <div key={itemIndex} className="flex justify-between items-center text-sm">
+                        <div 
+                          key={itemIndex} 
+                          className="flex justify-between items-center text-sm p-2 rounded cursor-pointer hover:bg-accent/10 transition-colors"
+                          onClick={() => handleItemClick({ 
+                            name: item.name, 
+                            description: `${item.flavor} - ${category.category}`, 
+                            price: item.price, 
+                            category: "Bebidas y Postres",
+                            flavor: item.flavor 
+                          })}
+                          data-testid={`card-beverage-${categoryIndex}-${itemIndex}`}
+                        >
                           <div className="flex-1">
                             <span className="text-foreground font-medium" data-testid={`beverage-name-${categoryIndex}-${itemIndex}`}>
                               {item.name}
@@ -349,7 +407,18 @@ export default function MenuSection() {
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {crepiburgers.map((crepi, index) => (
-                <Card key={index} className="menu-card bg-background border-border overflow-hidden">
+                <Card 
+                  key={index} 
+                  className="menu-card bg-background border-border overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
+                  onClick={() => handleItemClick({ 
+                    name: crepi.name, 
+                    description: crepi.description, 
+                    price: crepi.price, 
+                    category: "Crepiburgers",
+                    image: crepi.image 
+                  })}
+                  data-testid={`card-crepi-${index}`}
+                >
                   <img 
                     src={crepi.image}
                     alt={crepi.name}
@@ -378,6 +447,13 @@ export default function MenuSection() {
           )}
         </div>
       </div>
+
+      {/* Menu Item Modal */}
+      <MenuItemModal
+        item={selectedItem}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+      />
     </section>
   );
 }
