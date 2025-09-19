@@ -1,32 +1,42 @@
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { CartProvider } from "@/hooks/use-cart";
-import Home from "@/pages/home";
-import NotFound from "@/pages/not-found";
+import { Routes, Route, Navigate } from "react-router-dom";
+import OrdersDashboard from "./pages/OrdersDashboard";
+import SalesDashboard from "./pages/SalesDashboard";
+import ClosedSalesDashboard from "./pages/ClosedSalesDashboard"; // ✅ importa la nueva página
+import Home from "./components/Home";
+import Login from "./components/Login";
 
-function Router() {
-  return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route component={NotFound} />
-    </Switch>
-  );
+function PrivateRoute({ children }: { children: JSX.Element }) {
+  const isAuth = localStorage.getItem("auth") === "true";
+  return isAuth ? children : <Navigate to="/login" replace />;
 }
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </CartProvider>
-    </QueryClientProvider>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/vendedor" element={<OrdersDashboard />} />
+      <Route path="/login" element={<Login />} />
+
+      {/* Rutas privadas */}
+      <Route
+        path="/sales"
+        element={
+          <PrivateRoute>
+            <SalesDashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/closed"
+        element={
+          <PrivateRoute>
+            <ClosedSalesDashboard />
+          </PrivateRoute>
+        }
+      />
+    </Routes>
   );
 }
 
 export default App;
+

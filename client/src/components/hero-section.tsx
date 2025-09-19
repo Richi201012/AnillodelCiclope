@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Utensils, Phone } from "lucide-react";
+import mascot from "./imagenes/image copy.png";
+
+
 
 export default function HeroSection() {
   const scrollToMenu = () => {
@@ -52,12 +55,14 @@ export default function HeroSection() {
           
           <div className="flex justify-center">
             <div className="cyclope-float">
-              <img 
-                src="https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&h=600" 
-                alt="Personaje mascota del Ciclope" 
-                className="w-80 h-80 lg:w-96 lg:h-96 object-cover rounded-full border-4 border-accent shadow-2xl"
-                data-testid="img-mascot"
-              />
+ <img
+  src={mascot}
+  alt="Personaje mascota del Cíclope"
+  className="w-80 h-80 lg:w-96 lg:h-96 object-cover rounded-full border-4 border-accent shadow-2xl"
+  data-testid="img-mascot"
+/>
+
+
             </div>
           </div>
         </div>

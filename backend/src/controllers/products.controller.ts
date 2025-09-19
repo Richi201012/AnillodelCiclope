@@ -1,64 +1,50 @@
 import { Request, Response } from 'express';
-import { ProductsService } from '../services/products.service';
 
 export class ProductsController {
-  private productsService: ProductsService;
-
-  constructor() {
-    this.productsService = new ProductsService();
-  }
-
-  public async createProduct(req: Request, res: Response): Promise<Response> {
+  // Obtener todos los productos
+  public async getAllProducts(req: Request, res: Response): Promise<void> {
     try {
-      const product = await this.productsService.create(req.body);
-      return res.status(201).json(product);
+      // 🔹 Aquí pondrías la lógica real con base de datos (ej. Mongoose)
+      res.json([
+        { id: 1, name: 'Coca-Cola', price: 20 },
+        { id: 2, name: 'Papas Sabritas', price: 15 }
+      ]);
     } catch (error) {
-      return res.status(500).json({ message: 'Error creating product', error });
+      res.status(500).json({ message: 'Error obteniendo productos' });
     }
   }
 
-  public async getProducts(req: Request, res: Response): Promise<Response> {
+  // Obtener un producto por ID
+  public async getProductById(req: Request, res: Response): Promise<void> {
     try {
-      const products = await this.productsService.getAll();
-      return res.status(200).json(products);
+      const { id } = req.params;
+      // Mock de ejemplo (reemplazar con DB real)
+      res.json({ id, name: 'Coca-Cola', price: 20 });
     } catch (error) {
-      return res.status(500).json({ message: 'Error fetching products', error });
+      res.status(500).json({ message: 'Error obteniendo producto por id' });
     }
   }
 
-  public async getProductById(req: Request, res: Response): Promise<Response> {
+  // Crear un nuevo producto
+  public async createProduct(req: Request, res: Response): Promise<void> {
     try {
-      const product = await this.productsService.getById(req.params.id);
-      if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-      return res.status(200).json(product);
+      const { name, price } = req.body;
+      // Aquí iría lógica de guardado en DB
+      const newProduct = { id: Date.now(), name, price };
+      res.status(201).json(newProduct);
     } catch (error) {
-      return res.status(500).json({ message: 'Error fetching product', error });
+      res.status(500).json({ message: 'Error creando producto' });
     }
   }
 
-  public async updateProduct(req: Request, res: Response): Promise<Response> {
+  // Eliminar un producto por ID
+  public async deleteProduct(req: Request, res: Response): Promise<void> {
     try {
-      const updatedProduct = await this.productsService.update(req.params.id, req.body);
-      if (!updatedProduct) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-      return res.status(200).json(updatedProduct);
+      const { id } = req.params;
+      // Aquí iría lógica para eliminar en DB
+      res.json({ message: `Producto con id ${id} eliminado` });
     } catch (error) {
-      return res.status(500).json({ message: 'Error updating product', error });
-    }
-  }
-
-  public async deleteProduct(req: Request, res: Response): Promise<Response> {
-    try {
-      const deletedProduct = await this.productsService.delete(req.params.id);
-      if (!deletedProduct) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-      return res.status(204).send();
-    } catch (error) {
-      return res.status(500).json({ message: 'Error deleting product', error });
+      res.status(500).json({ message: 'Error eliminando producto' });
     }
   }
 }

@@ -1,0 +1,69 @@
+{
+  "_metadata": {
+    "description": "Configuración de rutas para CiclopeSnacks",
+    "categories": {
+      "cliente": "Vista de cliente para realizar pedidos",
+      "vendedor": "Panel de control del vendedor para ver pedidos",
+      "ventas": "Vista de ventas por día",
+      "ventasCerradas": "Historial de ventas cerradas"
+    }
+  },
+  "routes": [
+    {
+      "id": "cliente",
+      "path": "/",
+      "component": "Home",
+      "name": "Cliente",
+      "category": "cliente",
+      "showInNav": true,
+      "icon": "shopping-cart",
+      "isPrivate": false,
+      "meta": {
+        "title": "Cliente - CiclopeSnacks",
+        "description": "Página principal para que los clientes realicen pedidos"
+      }
+    },
+    {
+      "id": "vendedor",
+      "path": "/vendedor",
+      "component": "OrdersDashboard",
+      "name": "Panel Vendedor",
+      "category": "vendedor",
+      "showInNav": true,
+      "icon": "dashboard",
+      "isPrivate": true,
+      "meta": {
+        "title": "Panel Vendedor - CiclopeSnacks",
+        "description": "Panel de control para los pedidos del vendedor"
+      }
+    },
+    {
+      "id": "ventas",
+      "path": "/sales",
+      "component": "SalesDashboard",
+      "name": "Ventas",
+      "category": "ventas",
+      "showInNav": true,
+      "icon": "bar-chart",
+      "isPrivate": true,
+      "meta": {
+        "title": "Ventas por Día - CiclopeSnacks",
+        "description": "Visualización de las ventas agrupadas por día"
+      }
+    },
+    {
+      "id": "ventasCerradas",
+      "path": "/closed",
+      "component": "ClosedSalesDashboard",
+      "name": "Ventas Cerradas",
+      "category": "ventasCerradas",
+      "showInNav": true,
+      "icon": "archive",
+      "isPrivate": true,
+      "meta": {
+        "title": "Ventas Cerradas - CiclopeSnacks",
+        "description": "Historial de ventas cerradas por día"
+      }
+    }
+  ]
+}

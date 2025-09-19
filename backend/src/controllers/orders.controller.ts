@@ -1,48 +1,51 @@
 import { Request, Response } from 'express';
-import { OrdersService } from '../services/orders.service';
 
 export class OrdersController {
-  private ordersService: OrdersService;
-
-  constructor() {
-    this.ordersService = new OrdersService();
+  // Obtener todos los pedidos
+  public async getAllOrders(req: Request, res: Response): Promise<void> {
+    try {
+      // 🔹 Aquí pondrías la lógica real con base de datos (ej. Mongoose)
+      // Por ahora devolvemos un mock
+      res.json([
+        { id: 1, product: 'Coca-Cola', quantity: 2 },
+        { id: 2, product: 'Papas Sabritas', quantity: 1 }
+      ]);
+    } catch (error) {
+      res.status(500).json({ message: 'Error obteniendo pedidos' });
+    }
   }
 
+  // Obtener un pedido por ID
+  public async getOrderById(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params;
+      // Mock de ejemplo (reemplazar por lógica real)
+      res.json({ id, product: 'Coca-Cola', quantity: 2 });
+    } catch (error) {
+      res.status(500).json({ message: 'Error obteniendo pedido por id' });
+    }
+  }
+
+  // Crear un nuevo pedido
   public async createOrder(req: Request, res: Response): Promise<void> {
     try {
-      const orderData = req.body;
-      const newOrder = await this.ordersService.createOrder(orderData);
+      const { product, quantity } = req.body;
+      // Aquí iría lógica de guardado en DB
+      const newOrder = { id: Date.now(), product, quantity };
       res.status(201).json(newOrder);
     } catch (error) {
-      res.status(500).json({ message: 'Error al crear el pedido', error });
+      res.status(500).json({ message: 'Error creando pedido' });
     }
   }
 
-  public async getOrder(req: Request, res: Response): Promise<void> {
-    try {
-      const orderId = req.params.id;
-      const order = await this.ordersService.getOrder(orderId);
-      if (order) {
-        res.status(200).json(order);
-      } else {
-        res.status(404).json({ message: 'Pedido no encontrado' });
-      }
-    } catch (error) {
-      res.status(500).json({ message: 'Error al obtener el pedido', error });
-    }
-  }
-
+  // Eliminar un pedido por ID
   public async deleteOrder(req: Request, res: Response): Promise<void> {
     try {
-      const orderId = req.params.id;
-      const result = await this.ordersService.deleteOrder(orderId);
-      if (result) {
-        res.status(204).send();
-      } else {
-        res.status(404).json({ message: 'Pedido no encontrado' });
-      }
+      const { id } = req.params;
+      // Aquí iría lógica para eliminar en DB
+      res.json({ message: `Pedido con id ${id} eliminado` });
     } catch (error) {
-      res.status(500).json({ message: 'Error al eliminar el pedido', error });
+      res.status(500).json({ message: 'Error eliminando pedido' });
     }
   }
 }
